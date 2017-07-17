@@ -1,0 +1,65 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../ct-core-utils/ct-api-provider-behaviour.html">
+
+<!--
+`ct-bank-account-api`
+Element for consuming bank accounts API
+
+@demo demo/index.html 
+-->
+
+<dom-module id="ct-bank-account-api">
+  <template>
+    <iron-ajax id="getBankAccountTypes"></iron-ajax>
+    <iron-ajax id="deleteBankAccount"></iron-ajax>
+    <iron-ajax id="getBankAccount"></iron-ajax>
+    <iron-ajax id="updateBankAccount"></iron-ajax>
+    <iron-ajax id="validateViaBank"></iron-ajax>
+    <iron-ajax id="validateManually"></iron-ajax>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'ct-bank-account-api',
+      behaviors: [CT.Behaviours.ApiProvider],
+
+      getBankAccountTypes: function() {
+        this.$.getBankAccountTypes.url = this._url('/bank-accounts/types');
+        return this._generateRequest(this.$.getBankAccountTypes);
+      },
+
+      deleteBankAccount: function (bankAccountId) {
+        this.$.deleteBankAccount.url=this._url('/bank-accounts/' + bankAccountId);
+        this.$.deleteBankAccount.method = 'DELETE';
+        this.$.deleteBankAccount.contentType = "application/json";
+        return this._generateRequest(this.$.deleteBankAccount);
+      },
+
+      getBankAccount: function (bankAccountId) {
+        this.$.getBankAccount.url = this._url('/bank-accounts/' + bankAccountId);
+        return this._generateRequest(this.$.getBankAccount);
+      },
+
+      updateBankAccount: function(bankAccountId, newAccountDetails) {
+        this.$.updateBankAccount.url=this._url('/bank-accounts/' + bankAccountId);
+        this.$.updateBankAccount.method = 'PUT';
+        this.$.updateBankAccount.contentType = "application/json";
+        this.$.updateBankAccount.body = newAccountDetails;
+        return this._generateRequest(this.$.updateBankAccount);
+      },
+
+      validateViaBank: function (bankAccountId) {
+        this.$.validateViaBank.url = this._url('/bank-accounts/' + bankAccountId + '/validate');
+        return this._generateRequest(this.$.validateViaBank);
+      },
+
+      validateManually: function(bankAccountId) {
+        this.$.validateManually.url=this._url('/bank-accounts/' + bankAccountId + '/validate');
+        this.$.validateManually.method = 'PUT';
+        this.$.validateManually.contentType = "application/json";
+        return this._generateRequest(this.$.validateManually);
+      },
+    });
+  </script>
+</dom-module>
