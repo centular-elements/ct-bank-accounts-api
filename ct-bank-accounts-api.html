@@ -9,7 +9,7 @@ Element for consuming bank accounts API
 @demo demo/index.html 
 -->
 
-<dom-module id="ct-bank-account-api">
+<dom-module id="ct-bank-accounts-api">
   <template>
     <iron-ajax id="getBankAccountTypes"></iron-ajax>
     <iron-ajax id="deleteBankAccount"></iron-ajax>
@@ -21,7 +21,7 @@ Element for consuming bank accounts API
 
   <script>
     Polymer({
-      is: 'ct-bank-account-api',
+      is: 'ct-bank-accounts-api',
       behaviors: [CT.Behaviours.ApiProvider],
 
       getBankAccountTypes: function() {
