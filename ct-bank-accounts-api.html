@@ -12,11 +12,11 @@ Element for consuming bank accounts API
 <dom-module id="ct-bank-accounts-api">
   <template>
     <iron-ajax id="getBankAccountTypes"></iron-ajax>
-    <iron-ajax id="deleteBankAccount"></iron-ajax>
+    <iron-ajax id="createOwnerBankAccount"></iron-ajax>
+    <iron-ajax id="filterOwnerBankAccounts"></iron-ajax>
     <iron-ajax id="getBankAccount"></iron-ajax>
     <iron-ajax id="updateBankAccount"></iron-ajax>
-    <iron-ajax id="validateViaBank"></iron-ajax>
-    <iron-ajax id="validateManually"></iron-ajax>
+    <iron-ajax id="deleteBankAccount"></iron-ajax>
   </template>
 
   <script>
@@ -29,11 +29,26 @@ Element for consuming bank accounts API
         return this._generateRequest(this.$.getBankAccountTypes);
       },
 
-      deleteBankAccount: function (bankAccountId) {
-        this.$.deleteBankAccount.url=this._url('/bank-accounts/' + bankAccountId);
-        this.$.deleteBankAccount.method = 'DELETE';
-        this.$.deleteBankAccount.contentType = "application/json";
-        return this._generateRequest(this.$.deleteBankAccount);
+      createOwnerBankAccount: function (ownerId, newBankAccount) {
+        this.$.createOwnerBankAccount.url=this._url('/owners/' + ownerId + "/bank-accounts");
+        this.$.createOwnerBankAccount.method = 'POST';
+        this.$.createOwnerBankAccount.contentType = "application/json";
+        this.$.createOwnerBankAccount.body = newBankAccount;
+        return this._generateRequest(this.$.createOwnerBankAccount);
+      },
+
+      filterOwnerBankAccounts: function (ownerId, pageNumber, pageSize) {
+        var queryParamsClause = [
+          pageNumber ? 'page_number=' + pageNumber : null,
+          pageSize ? 'page_size=' + pageSize : null
+        ].filter(function (queryParam) {
+          return queryParam !== null;
+        }).join('&');
+
+        queryParamsClause = queryParamsClause.length > 0 ? '?' + queryParamsClause : '';
+
+        this.$.filterOwnerBankAccounts.url = this._url('/owners/' + ownerId + '/bank-accounts' + queryParamsClause);
+        return this._generateRequest(this.$.filterOwnerBankAccounts);
       },
 
       getBankAccount: function (bankAccountId) {
@@ -49,17 +64,12 @@ Element for consuming bank accounts API
         return this._generateRequest(this.$.updateBankAccount);
       },
 
-      validateViaBank: function (bankAccountId) {
-        this.$.validateViaBank.url = this._url('/bank-accounts/' + bankAccountId + '/validate');
-        return this._generateRequest(this.$.validateViaBank);
-      },
-
-      validateManually: function(bankAccountId) {
-        this.$.validateManually.url=this._url('/bank-accounts/' + bankAccountId + '/validate');
-        this.$.validateManually.method = 'PUT';
-        this.$.validateManually.contentType = "application/json";
-        return this._generateRequest(this.$.validateManually);
-      },
+      deleteBankAccount: function (bankAccountId) {
+        this.$.deleteBankAccount.url=this._url('/bank-accounts/' + bankAccountId);
+        this.$.deleteBankAccount.method = 'DELETE';
+        this.$.deleteBankAccount.contentType = "application/json";
+        return this._generateRequest(this.$.deleteBankAccount);
+      }
     });
   </script>
 </dom-module>
